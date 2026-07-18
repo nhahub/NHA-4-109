@@ -32,6 +32,7 @@ backend/WebApplication1/jwtsettings.json
 backend/WebApplication1/corssettings.json
 backend/WebApplication1/mlapisettings.json
 backend/WebApplication1/appsettings.Development.json
+backend/.env
 backend/.vs/
 backend/.idea/
 

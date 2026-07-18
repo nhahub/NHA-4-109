@@ -1,0 +1,193 @@
+version: "3.9"
+
+services:
+  # ml
+  ml-db:
+    image: postgres:16-alpine
+    container_name: smsrly_ml_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: smsrly
+      POSTGRES_PASSWORD: smsrly_pass
+      POSTGRES_DB: smsrly_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smsrly -d smsrly_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ml-redis:
+    image: redis:7-alpine
+    container_name: smsrly_ml_redis
+    restart: unless-stopped
+    command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  ml-api:
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: smsrly_ml_api
+    restart: unless-stopped
+    env_file:
+      - ./ml/.env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://smsrly:smsrly_pass@ml-db:5432/smsrly_db
+      DATABASE_URL_SYNC: postgresql+psycopg2://smsrly:smsrly_pass@ml-db:5432/smsrly_db
+      REDIS_URL: redis://ml-redis:6379/0
+      CELERY_BROKER_URL: redis://ml-redis:6379/1
+      CELERY_RESULT_BACKEND: redis://ml-redis:6379/2
+      MODEL_DIR: /app/models
+      LOG_FILE: /app/logs/app.log
+    volumes:
+      - models_volume:/app/models
+      - logs_volume:/app/logs
+    # http://ml-api:8000/api/v1
+    depends_on:
+      ml-db:
+        condition: service_healthy
+      ml-redis:
+        condition: service_healthy
+    command: >
+      sh -c "
+        echo 'Running Alembic migrations...' &&
+        alembic upgrade head &&
+        echo 'Starting API...' &&
+        uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2
+      "
+
+  ml-worker:
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: smsrly_ml_worker
+    restart: unless-stopped
+    env_file:
+      - ./ml/.env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://smsrly:smsrly_pass@ml-db:5432/smsrly_db
+      DATABASE_URL_SYNC: postgresql+psycopg2://smsrly:smsrly_pass@ml-db:5432/smsrly_db
+      REDIS_URL: redis://ml-redis:6379/0
+      CELERY_BROKER_URL: redis://ml-redis:6379/1
+      CELERY_RESULT_BACKEND: redis://ml-redis:6379/2
+      MODEL_DIR: /app/models
+      LOG_FILE: /app/logs/worker.log
+    volumes:
+      - models_volume:/app/models
+      - logs_volume:/app/logs
+    depends_on:
+      ml-db:
+        condition: service_healthy
+      ml-redis:
+        condition: service_healthy
+    command: celery -A services.workers.celery_app worker --loglevel=info --queues=default,scraping,ml,geocoding --concurrency=4
+
+  ml-beat:
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: smsrly_ml_beat
+    restart: unless-stopped
+    env_file:
+      - ./ml/.env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://smsrly:smsrly_pass@ml-db:5432/smsrly_db
+      REDIS_URL: redis://ml-redis:6379/0
+      CELERY_BROKER_URL: redis://ml-redis:6379/1
+      CELERY_RESULT_BACKEND: redis://ml-redis:6379/2
+      MODEL_DIR: /app/models
+      LOG_FILE: /app/logs/beat.log
+    volumes:
+      - models_volume:/app/models
+      - logs_volume:/app/logs
+    depends_on:
+      - ml-worker
+    command: celery -A services.workers.celery_app beat --loglevel=info --scheduler celery.beat:PersistentScheduler
+
+  ml-flower:
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: smsrly_ml_flower
+    restart: unless-stopped
+    environment:
+      CELERY_BROKER_URL: redis://ml-redis:6379/1
+      CELERY_RESULT_BACKEND: redis://ml-redis:6379/2
+    ports:
+      - "5555:5555"
+    depends_on:
+      - ml-worker
+    command: celery -A services.workers.celery_app flower --port=5555
+
+  # db
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: smsrly_mssql
+    restart: unless-stopped
+    env_file: ./backend/.env
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${SQL_SA_PASSWORD}
+    volumes:
+      - mssql_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: smsrly_backend
+    restart: unless-stopped
+    env_file: ./backend/.env
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Server=mssql,1433;Database=SMSRLY;User Id=sa;Password=${SQL_SA_PASSWORD};TrustServerCertificate=True;"
+      Jwt__AccessSecret: ${JWT_ACCESS_SECRET}
+      Jwt__RefreshSecret: ${JWT_REFRESH_SECRET}
+      Jwt__Issuer: ${JWT_ISSUER}
+      Jwt__Audience: ${JWT_AUDIENCE}
+      Jwt__AccessTokenMinutes: "20"
+      Jwt__RefreshTokenDays: "7"
+      Cors__ReactAppOrigin: ${REACT_APP_ORIGIN}
+      MlApi__BaseUrl: http://ml-api:8000/api/v1
+    depends_on:
+      - ml-api
+
+  # frontend + nginx
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: smsrly_frontend
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  models_volume:
+  logs_volume:
+  mssql_data:
+
+networks:
+  default:
+    name: smsrly_network

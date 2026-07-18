@@ -235,7 +235,7 @@ celery -A services.workers.celery_app beat --loglevel=info
 
 ---
 
-## Running with Docker (recommended)
+## Running independently with Docker (obsolete, check project-wide docker deployment)
 
 ```bash
 # 1. Copy environment file

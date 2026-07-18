@@ -9,7 +9,7 @@ import {
 import { toastBus } from "../utils/toastBus";
 
 export const apiClient = axios.create({
-  baseURL: 'https://localhost:7184/api',
+  baseURL: '/api',
   headers: {
     "Content-Type": "application/json",
   },

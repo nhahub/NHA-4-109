@@ -1,10 +1,13 @@
-# SMSRLY -- Property Recommendations Platform
+# SMSRLY -- Property Recommendation Platform
 
 ## Overview
 
 SMSRLY is a web-based property recommendation platform that connects
 tenants directly with property owners while providing personalized
-property recommendations through a machine learning service.
+property recommendations through a custom-made machine learning service as
+the recommendations provider.
+
+---
 
 ## Architecture
 
@@ -19,6 +22,8 @@ property recommendations through a machine learning service.
     BusinessLogicLayer/
     DataAccessLayer/
 
+---
+
 ## Features
 
 -   JWT Authentication
@@ -28,6 +33,8 @@ property recommendations through a machine learning service.
 -   Machine Learning Recommendations
 -   Swagger API Documentation
 -   Entity Framework Core Migrations
+
+---
 
 ## Technology Stack
 
@@ -39,6 +46,8 @@ property recommendations through a machine learning service.
 -   Redis
 -   Docker
 
+---
+
 ## Project Structure
 
     frontend/
@@ -48,7 +57,9 @@ property recommendations through a machine learning service.
     └── DataAccessLayer/
     ml/
 
-## Getting Started
+---    
+
+## Getting Started (local deployment)
 
 ### 1. Configure
 
@@ -67,7 +78,7 @@ dotnet ef database update --project ../DataAccessLayer --startup-project .
 dotnet run --project WebApplication1
 ```
 
-Swagger: - https://localhost:7184/swagger
+Swagger: - https://localhost:5089/swagger
 
 ### 4. Run ML Service
 
@@ -82,6 +93,32 @@ npm install
 npm run dev
 ```
 
+---
+
+## Containerized Deployment (Docker/Podman)
+
+### Building
+
+
+```bash
+docker compose up --build -d
+```
+
+### Starting
+
+
+```bash
+docker compose start
+```
+
+### Deployment Details
+
+- One-command deployment using Docker/Podman
+- Only frontend exposed through its port
+- Reverse proxy (Nginx) used to proxy backend API calls to frontend
+
+---
+
 ## API
 
 -   Authentication
@@ -91,6 +128,8 @@ npm run dev
 
 Swagger provides interactive API documentation and JWT testing.
 
+---
+
 ## Security
 
 -   BCrypt password hashing
@@ -99,6 +138,24 @@ Swagger provides interactive API documentation and JWT testing.
 -   Ownership authorization
 -   Input validation
 
+---
+
 ## License
 
-This project was developed as an academic graduation project.
+This project was developed as an academic graduation project, with permission and supervision from [Digital Egypt Pioneers Program (DEPI)](http://depi.gov.eg/), and licensed under the ِApache 2.0 License.
+
+```
+Copyright 2026 Abdelrhman Elbrens
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```

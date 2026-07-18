@@ -1,0 +1,7 @@
+appsettings.Development.json
+jwtsettings.json
+corssettings.json
+mlapisettings.json
+.env
+bin/
+obj/

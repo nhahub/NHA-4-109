@@ -11,9 +11,9 @@ using PresentationLayer.Integration;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
-    .AddJsonFile("jwtsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile("corssettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile("mlapisettings.json", optional: false, reloadOnChange: true);
+    .AddJsonFile("jwtsettings.json", optional: true, reloadOnChange: true)
+    .AddJsonFile("corssettings.json", optional: true, reloadOnChange: true)
+    .AddJsonFile("mlapisettings.json", optional: true, reloadOnChange: true);
 
 builder.Services.AddControllers();
 
