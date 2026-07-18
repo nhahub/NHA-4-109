@@ -2,12 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using DataAccessLayer.ModelContetxt;
+using DataAccessLayer.Classes;
 namespace Bll.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly AppContext _context;
+        private readonly DataAccessLayer.AppContext _context;
 
         
         private IUserRepository? _users;
@@ -20,7 +21,7 @@ namespace Bll.Repositories
         private IServiceRepository? _services;
         private IPreferencesRepository? _preferences;
 
-        public UnitOfWork(AppContext context)
+        public UnitOfWork(DataAccessLayer.AppContext context)
         {
             _context = context;
         }

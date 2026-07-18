@@ -13,10 +13,11 @@ namespace DataAccessLayer.Classes
         public int MaxPrice { get; set; }
         public int NumberOfRooms { get; set; }
         public string Type { get; set; }               
-        public string Services { get; set; }          
+        public string Services { get; set; }
 
-        
-        public Tenant Tenant { get; set; }
+        public bool IsDeleted { get; set; }
+        public int TenantId { get; set; }
+        public Tentant Tenant { get; set; }
     }
 }   
 

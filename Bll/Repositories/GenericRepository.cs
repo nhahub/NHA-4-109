@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Reflection;
 using DataAccessLayer;        
-using DataAccessLayer.Models;
+using DataAccessLayer.ModelContetxt;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bll.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        protected readonly AppContext _context;
+        protected readonly DataAccessLayer.AppContext _context;
         protected readonly DbSet<T> _dbSet;
-        private readonly AppContext context;
+        private readonly DataAccessLayer.AppContext context;
 
-        public GenericRepository(AppContext context)
+        public GenericRepository(DataAccessLayer.AppContext context)
         {
             _context = context;
             _dbSet = context.Set<T>();
@@ -27,6 +28,11 @@ namespace Bll.Repositories
         public void Update(T entity) => _dbSet.Update(entity);
 
         public void Delete(T entity) => _dbSet.Remove(entity);
+
+        public void Save()
+        {
+            _context.SaveChanges();
+        }
 
         public void SoftDelete(T entity)
         {

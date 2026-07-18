@@ -12,15 +12,16 @@ namespace DataAccessLayer.Classes
         public int SenderFlag { get; set; }
 
         public DateTime ReciveDate { get; set; }
-        public DateTime ReadDate { get; set; }
+        public DateTime? ReadDate { get; set; }
         
-        public TimeSpan TimeStamp { get; set; }
+        
 
-        public bool Isdeleted { get; set; }
-
+        public bool IsDeleted { get; set; }
+        
+        public int OwnerUsserId { get; set; }
         public Owner Owner { get; set; }
-
-        public Tenant tentant { get; set; }
+        public int tentantUsserId { get; set; }
+        public Tentant tentant { get; set; }
 
     }
 }

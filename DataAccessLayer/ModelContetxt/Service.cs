@@ -15,11 +15,12 @@ namespace DataAccessLayer.Classes
 
         public string PhoneNumber { get; set; }
 
+        public bool IsDeleted { get; set; }
 
         public string Address { get; set; }
 
 
-        public ICollection<Property>  Properties { get; set; } 
+        public ICollection<Property>  Properties { get; set; } = new List<Property>();
 
     }
 }

@@ -8,7 +8,7 @@ namespace Bll.Repositories
 {
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
-        public UserRepository(AppContext context) : base(context) { }
+        public UserRepository(DataAccessLayer.AppContext context) : base(context) { }
 
         public User? GetByEmail(string email)
             => _dbSet.FirstOrDefault(u => u.Email == email && !u.IsDeleted);

@@ -9,11 +9,5 @@ namespace DataAccessLayer.Classes
        public ICollection<Property> Properties { get; set; }
 
         public ICollection<Message> Messages { get; set; }
-
-
-
-
-
-
     }
 }

@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ragha\\OneDrive\\Desktop\\Examination system\\DepiDataBase\\DepiDataBase\\DataAccessLayer\\DataAccessLayer.csproj": {}
+    "C:\\Users\\Mahmoud\\Downloads\\DepiDataBase\\DepiDataBase\\DataAccessLayer\\DataAccessLayer.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ragha\\OneDrive\\Desktop\\Examination system\\DepiDataBase\\DepiDataBase\\DataAccessLayer\\DataAccessLayer.csproj": {
+    "C:\\Users\\Mahmoud\\Downloads\\DepiDataBase\\DepiDataBase\\DataAccessLayer\\DataAccessLayer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ragha\\OneDrive\\Desktop\\Examination system\\DepiDataBase\\DepiDataBase\\DataAccessLayer\\DataAccessLayer.csproj",
+        "projectUniqueName": "C:\\Users\\Mahmoud\\Downloads\\DepiDataBase\\DepiDataBase\\DataAccessLayer\\DataAccessLayer.csproj",
         "projectName": "DataAccessLayer",
-        "projectPath": "C:\\Users\\ragha\\OneDrive\\Desktop\\Examination system\\DepiDataBase\\DepiDataBase\\DataAccessLayer\\DataAccessLayer.csproj",
-        "packagesPath": "C:\\Users\\ragha\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ragha\\OneDrive\\Desktop\\Examination system\\DepiDataBase\\DepiDataBase\\DataAccessLayer\\obj\\",
+        "projectPath": "C:\\Users\\Mahmoud\\Downloads\\DepiDataBase\\DepiDataBase\\DataAccessLayer\\DataAccessLayer.csproj",
+        "packagesPath": "C:\\Users\\Mahmoud\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Mahmoud\\Downloads\\DepiDataBase\\DepiDataBase\\DataAccessLayer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ragha\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Mahmoud\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -61,6 +61,26 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[10.0.9, )"
+            },
+            "Scalar.AspNetCore": {
+              "target": "Package",
+              "version": "[2.16.6, )"
+            },
+            "Scalar.AspNetCore.Microsoft": {
+              "target": "Package",
+              "version": "[2.16.6, )"
+            },
+            "Scalar.AspNetCore.Swashbuckle": {
+              "target": "Package",
+              "version": "[2.16.6, )"
+            },
+            "Swashbuckle.AspNetCore.SwaggerGen": {
+              "target": "Package",
+              "version": "[10.2.3, )"
+            },
+            "Swashbuckle.AspNetCore.SwaggerUI": {
+              "target": "Package",
+              "version": "[10.2.3, )"
             }
           },
           "imports": [

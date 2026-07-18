@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Bll.Interfaces
 {
-    public interface ITenantRepository : IGenericRepository<Tenant>
+    public interface ITenantRepository : IGenericRepository<Tentant>
     {
         IEnumerable<Review> GetTenantReviews(int tenantId);
         IEnumerable<Message> GetTenantMessages(int tenantId);

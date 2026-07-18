@@ -14,5 +14,7 @@ namespace Bll.Interfaces
         void Update(T entity);
         void Delete(T entity);
         void SoftDelete(T entity);
+
+        void Save();
     }
 }

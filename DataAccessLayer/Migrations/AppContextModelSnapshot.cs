@@ -34,13 +34,13 @@ namespace DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Isdeleted")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<int>("OwnerUsserId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ReadDate")
+                    b.Property<DateTime?>("ReadDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("ReciveDate")
@@ -48,11 +48,6 @@ namespace DataAccessLayer.Migrations
 
                     b.Property<int>("SenderFlag")
                         .HasColumnType("int");
-
-                    b.Property<TimeSpan>("TimeStamp")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("time")
-                        .HasComputedColumnSql("DATEDIFF(SECOND, [ReciveDate], [ReadDate]) / 3600.0", true);
 
                     b.Property<int>("tentantUsserId")
                         .HasColumnType("int");
@@ -63,7 +58,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("tentantUsserId");
 
-                    b.ToTable("Message");
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Classes.Preferences", b =>
@@ -73,6 +68,9 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PreferencesID"));
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LocationNearness")
                         .IsRequired()
@@ -103,7 +101,7 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("TenantID")
+                    b.Property<int>("TenantId")
                         .HasColumnType("int");
 
                     b.Property<string>("Type")
@@ -113,7 +111,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasKey("PreferencesID");
 
-                    b.HasIndex("TenantID")
+                    b.HasIndex("TenantId")
                         .IsUnique();
 
                     b.ToTable("Preferences");
@@ -135,13 +133,16 @@ namespace DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ManageAdminUsserId")
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("ManageAdminId")
                         .HasColumnType("int");
 
                     b.Property<int>("NumberOFRooms")
                         .HasColumnType("int");
 
-                    b.Property<int>("OwnerUsserId")
+                    b.Property<int>("OwnerId")
                         .HasColumnType("int");
 
                     b.Property<int>("RentPrice")
@@ -149,9 +150,9 @@ namespace DataAccessLayer.Migrations
 
                     b.HasKey("ProperyID");
 
-                    b.HasIndex("ManageAdminUsserId");
+                    b.HasIndex("ManageAdminId");
 
-                    b.HasIndex("OwnerUsserId");
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Property");
                 });
@@ -167,6 +168,9 @@ namespace DataAccessLayer.Migrations
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -240,28 +244,26 @@ namespace DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ReadDate")
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PropertyId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ReadDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("ReciveDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ReiewerUsserId")
+                    b.Property<int>("TenantId")
                         .HasColumnType("int");
-
-                    b.Property<int>("ReviewdPropertyProperyID")
-                        .HasColumnType("int");
-
-                    b.Property<TimeSpan>("TimewStamp")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("time")
-                        .HasComputedColumnSql("DATEDIFF(SECOND, [ReciveDate], [ReadDate]) / 3600.0", true);
 
                     b.HasKey("ReviewID");
 
-                    b.HasIndex("ReiewerUsserId");
+                    b.HasIndex("PropertyId");
 
-                    b.HasIndex("ReviewdPropertyProperyID");
+                    b.HasIndex("TenantId");
 
                     b.ToTable("Review");
                 });
@@ -295,11 +297,11 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("Owner", (string)null);
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Classes.Tenant", b =>
+            modelBuilder.Entity("DataAccessLayer.Classes.Tentant", b =>
                 {
                     b.HasBaseType("DataAccessLayer.Classes.User");
 
-                    b.ToTable("Tenant");
+                    b.ToTable("Tenant", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessLayer.Classes.Message", b =>
@@ -310,7 +312,7 @@ namespace DataAccessLayer.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("DataAccessLayer.Classes.Tenant", "tentant")
+                    b.HasOne("DataAccessLayer.Classes.Tentant", "tentant")
                         .WithMany("Messages")
                         .HasForeignKey("tentantUsserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -323,9 +325,9 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("DataAccessLayer.Classes.Preferences", b =>
                 {
-                    b.HasOne("DataAccessLayer.Classes.Tenant", "Tenant")
+                    b.HasOne("DataAccessLayer.Classes.Tentant", "Tenant")
                         .WithOne("Preferences")
-                        .HasForeignKey("DataAccessLayer.Classes.Preferences", "TenantID")
+                        .HasForeignKey("DataAccessLayer.Classes.Preferences", "TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -336,11 +338,11 @@ namespace DataAccessLayer.Migrations
                 {
                     b.HasOne("DataAccessLayer.Classes.Admin", "ManageAdmin")
                         .WithMany("Properties")
-                        .HasForeignKey("ManageAdminUsserId");
+                        .HasForeignKey("ManageAdminId");
 
                     b.HasOne("DataAccessLayer.Classes.Owner", "Owner")
                         .WithMany("Properties")
-                        .HasForeignKey("OwnerUsserId")
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -360,16 +362,16 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("DataAccessLayer.ModelContetxt.Review", b =>
                 {
-                    b.HasOne("DataAccessLayer.Classes.Tenant", "Reiewer")
-                        .WithMany("Reviews")
-                        .HasForeignKey("ReiewerUsserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("DataAccessLayer.Classes.Property", "ReviewdProperty")
                         .WithMany("Reviews")
-                        .HasForeignKey("ReviewdPropertyProperyID")
+                        .HasForeignKey("PropertyId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccessLayer.Classes.Tentant", "Reiewer")
+                        .WithMany("Reviews")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Reiewer");
@@ -410,11 +412,11 @@ namespace DataAccessLayer.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Classes.Tenant", b =>
+            modelBuilder.Entity("DataAccessLayer.Classes.Tentant", b =>
                 {
                     b.HasOne("DataAccessLayer.Classes.User", null)
                         .WithOne()
-                        .HasForeignKey("DataAccessLayer.Classes.Tenant", "UsserId")
+                        .HasForeignKey("DataAccessLayer.Classes.Tentant", "UsserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -438,7 +440,7 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Properties");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Classes.Tenant", b =>
+            modelBuilder.Entity("DataAccessLayer.Classes.Tentant", b =>
                 {
                     b.Navigation("Messages");
 

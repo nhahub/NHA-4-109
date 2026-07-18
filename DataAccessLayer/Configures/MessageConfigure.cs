@@ -11,10 +11,8 @@ namespace DataAccessLayer.Configures
         public void Configure(EntityTypeBuilder<Message> builder)
         {
             builder.HasKey(m => m.MessageID);
-            builder.Property(m => m.TimeStamp)
-           .HasComputedColumnSql(
-           "DATEDIFF(SECOND, [ReciveDate], [ReadDate]) / 3600.0",
-           stored: true);
+           
+         
 
 
         }

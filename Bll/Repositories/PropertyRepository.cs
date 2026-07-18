@@ -9,7 +9,7 @@ namespace Bll.Repositories
 {
     public class PropertyRepository : GenericRepository<Property>, IPropertyRepository
     {
-        public PropertyRepository(AppContext context) : base(context) { }
+        public PropertyRepository(DataAccessLayer.AppContext context) : base(context) { }
 
         public IEnumerable<Property> GetByPriceRange(int minPrice, int maxPrice)
             => _dbSet.Where(p => p.RentPrice >= minPrice && p.RentPrice <= maxPrice)

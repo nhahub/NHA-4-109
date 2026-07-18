@@ -1,5 +1,5 @@
 <Solution>
   <Project Path="Bll/Bll.csproj" Id="ee00b3d8-ad2b-4ab2-8514-e242a6eee6a2" />
   <Project Path="DataAccessLayer/DataAccessLayer.csproj" />
-  <Project Path="DepiDataBase/DepiProject.csproj" />
+  <Project Path="WebApplication1/PresentationLayer.csproj" Id="6c6e3ed9-568e-4ddc-82e0-cb97ef85e543" />
 </Solution>

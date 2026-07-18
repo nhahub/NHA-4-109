@@ -8,20 +8,20 @@ namespace Bll.Repositories
 {
     public class MessageRepository : GenericRepository<Message>, IMessageRepository
     {
-        public MessageRepository(AppContext context) : base(context) { }
+        public MessageRepository(DataAccessLayer.AppContext context) : base(context) { }
 
         public IEnumerable<Message> GetMessagesBetween(int ownerId, int tenantId)
             => _dbSet.Where(m => m.Owner.UsserId == ownerId
                               && m.tentant.UsserId == tenantId
-                              && !m.Isdeleted)
+                              && !m.IsDeleted)
                      .OrderBy(m => m.ReciveDate)
                      .ToList();
 
         public IEnumerable<Message> GetUnreadMessages(int ownerId, int tenantId)
             => _dbSet.Where(m => m.Owner.UsserId == ownerId
                               && m.tentant.UsserId == tenantId
-                              && m.ReadDate == default
-                              && !m.Isdeleted)
+                              && m.ReadDate == null
+                              && !m.IsDeleted)
                      .ToList();
 
         public void MarkAsRead(int messageId)
@@ -29,7 +29,7 @@ namespace Bll.Repositories
             var msg = _dbSet.Find(messageId);
             if (msg != null)
             {
-                msg.ReadDate = DateTime.Now;
+                 msg.ReadDate = DateTime.Now;
                 _dbSet.Update(msg);
             }
         }

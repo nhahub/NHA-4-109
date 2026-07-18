@@ -3,12 +3,13 @@ using DataAccessLayer.Classes;
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using DataAccessLayer.Classes;
+using DataAccessLayer.ModelContetxt;
 namespace Bll.Repositories
 {
-    public class TenantRepository : GenericRepository<Tenant>, ITenantRepository
+    public class TenantRepository : GenericRepository<Tentant>, ITenantRepository
     {
-        public TenantRepository(AppContext context) : base(context) { }
+        public TenantRepository(DataAccessLayer.AppContext context) : base(context) { }
 
         public IEnumerable<Review> GetTenantReviews(int tenantId)
             => _context.Set<Review>()
@@ -17,7 +18,7 @@ namespace Bll.Repositories
 
         public IEnumerable<Message> GetTenantMessages(int tenantId)
             => _context.Set<Message>()
-                       .Where(m => m.tentant.UsserId == tenantId && !m.Isdeleted)
+                       .Where(m => m.tentant.UsserId == tenantId && !m.IsDeleted)
                        .ToList();
     }
 }

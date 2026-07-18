@@ -1,5 +1,5 @@
 ﻿using DataAccessLayer.ModelContetxt;
-
+using DataAccessLayer.Classes;
 namespace Bll.Interfaces
 {
     public interface IPreferencesRepository : IGenericRepository<Preferences>
