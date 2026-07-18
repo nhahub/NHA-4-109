@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DataAccessLayer.ModelContetxt;
+﻿using DataAccessLayer.ModelContetxt;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
+using System.Collections.Generic;
+using System.Reflection.Emit;
+using System.Text;
 
 namespace DataAccessLayer.Configures
 {
@@ -11,11 +12,15 @@ namespace DataAccessLayer.Configures
     {
         public void Configure(EntityTypeBuilder<Review> builder)
         {
+            
+
             builder.HasKey(r => r.ReviewID);
-            builder.Property(r => r.TimewStamp)
-          .HasComputedColumnSql(
-          "DATEDIFF(SECOND, [ReciveDate], [ReadDate]) / 3600.0",
-          stored: true);
+
+           builder
+        .HasOne(r => r.Reiewer)
+        .WithMany(t => t.Reviews)
+        .HasForeignKey(r => r.TenantId)
+        .HasPrincipalKey(t => t.UsserId);
 
 
         }

@@ -33,7 +33,7 @@ namespace DataAccessLayer.Configures
 
             builder.HasOne(p => p.Tenant)
                    .WithOne(t => t.Preferences)
-                   .HasForeignKey<Preferences>("TenantID");
+                   .HasForeignKey<Preferences>(p=>p.TenantId);
         }
     }
 }
