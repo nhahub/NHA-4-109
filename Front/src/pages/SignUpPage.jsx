@@ -8,7 +8,10 @@ export default function SignUpPage() {
   const { signup, user } = useAuth();
   const { platformSettings } = usePlatform();
   const [role, setRole] = useState("tenant");
-  const [fullName, setFullName] = useState("");
+ const [firstName, setFirstName] = useState("");
+const [lastName, setLastName] = useState("");
+const [nationalID, setNationalID] = useState("");
+const [businessTaxID, setBusinessTaxID] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -24,10 +27,25 @@ export default function SignUpPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    if (!fullName.trim()) {
-      setError("Full name is required.");
-      return;
-    }
+    if (!firstName.trim()) {
+  setError("First name is required.");
+  return;
+}
+
+if (!lastName.trim()) {
+  setError("Last name is required.");
+  return;
+}
+
+if (!nationalID.trim()) {
+  setError("National ID is required.");
+  return;
+}
+
+if (role === "owner" && !businessTaxID.trim()) {
+  setError("Business Tax ID is required.");
+  return;
+}
     if (!email.trim()) {
       setError("Email is required.");
       return;
@@ -42,13 +60,16 @@ export default function SignUpPage() {
     }
     setLoading(true);
     await new Promise((r) => setTimeout(r, 350));
-    const result = signup(
-      fullName.trim(),
-      email.trim(),
-      password,
-      role,
-      phone.trim(),
-    );
+    const result = await signup({
+  firstName,
+  lastName,
+  nationalID,
+  phoneNumber: phone,
+  email,
+  password,
+  businessTaxID,
+  role: role === "owner" ? "Owner" : "Tenant",
+});
     setLoading(false);
     if (!result.success) {
       setError(result.error);
@@ -130,13 +151,29 @@ export default function SignUpPage() {
 
           <form onSubmit={handleSubmit} noValidate>
             {[
-              {
-                label: "Full Name",
-                type: "text",
-                ph: "John Doe",
-                icon: "fa-user",
-                val: fullName,
-                set: setFullName,
+             {
+  label: "First Name",
+  type: "text",
+  ph: "John",
+  icon: "fa-user",
+  val: firstName,
+  set: setFirstName,
+},
+{
+  label: "Last Name",
+  type: "text",
+  ph: "Doe",
+  icon: "fa-user",
+  val: lastName,
+  set: setLastName,
+},
+{
+  label: "National ID",
+  type: "text",
+  ph: "298xxxxxxxxxxxxx",
+  icon: "fa-id-card",
+  val: nationalID,
+                set: setNationalID,
               },
               {
                 label: "Email",

@@ -1,3 +1,4 @@
+import { login as loginApi, registerOwner, registerTenant } from "../api/auth";
 import { createContext, useContext, useState, useCallback } from "react";
 import { MOCK_ACCOUNTS, INITIAL_PROPERTIES } from "../data/mockData";
 
@@ -212,77 +213,85 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = useCallback(
-    (email, password) => {
-      const account = MOCK_ACCOUNTS.find(
-        (a) =>
-          a.email.toLowerCase() === email.toLowerCase() &&
-          a.password === password,
-      );
-      if (!account)
-        return { success: false, error: "Invalid email or password." };
-      const { password: _, ...safeUser } = account;
-      const directoryRecord = allUsers.find((u) => u.id === safeUser.id);
-      const mergedUser = directoryRecord?.avatar
-        ? { ...safeUser, avatar: directoryRecord.avatar }
-        : safeUser;
-      setUser(mergedUser);
-      localStorage.setItem("smsrly_user", JSON.stringify(mergedUser));
-      touchUserActivity(mergedUser.id);
-      return { success: true, user: mergedUser };
-    },
-    [touchUserActivity, allUsers],
-  );
+  async (email, password) => {
+    try {
+      const data = await loginApi(email, password);
 
-  const signup = useCallback(
-    (name, email, password, role, phone) => {
-      const exists = MOCK_ACCOUNTS.find(
-        (a) => a.email.toLowerCase() === email.toLowerCase(),
-      );
-      if (exists)
-        return {
-          success: false,
-          error: "An account with this email already exists.",
-        };
-      const id = role + "_" + Date.now();
-      const newAccount = {
-        id,
+      const safeUser = {
+        id: Date.now(),
         email,
-        password,
-        name,
-        role,
-        phone: phone || "",
-        since: new Date().getFullYear(),
-        savedProperties: [],
+        role: data.role,
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
       };
-      MOCK_ACCOUNTS.push(newAccount);
-      const { password: _, ...safeUser } = newAccount;
+
       setUser(safeUser);
       localStorage.setItem("smsrly_user", JSON.stringify(safeUser));
 
-      const directoryRecord = {
-        id,
-        name,
-        email,
-        role,
-        phone: phone || "",
-        status: "Pending",
-        verified: false,
-        provider: "email",
-        joined: Date.now(),
-        lastActivity: Date.now(),
+      return {
+        success: true,
+        user: safeUser,
       };
-      upsertAllUser(directoryRecord);
-      addNotification(safeUser, {
-        targetRole: "admin",
-        type: "user_signup",
-        content: `New ${role} account registered: ${name} (${email}).`,
-      });
+    } catch (err) {
+      return {
+        success: false,
+        error: "Invalid email or password.",
+      };
+    }
+  },
+  []
+);
+ const signup = useCallback(
+  async (userData) => {
+    try {
+      let data;
 
-      return { success: true, user: safeUser };
-    },
-    [upsertAllUser, addNotification],
-  );
+      if (userData.role.toLowerCase() === "owner") {
+        data = await registerOwner({
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          nationalID: userData.nationalID,
+          phoneNumber: userData.phoneNumber,
+          email: userData.email,
+          password: userData.password,
+          businessTaxId: userData.businessTaxId,
+        });
+      } else {
+        data = await registerTenant({
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          nationalID: userData.nationalID,
+          phoneNumber: userData.phoneNumber,
+          email: userData.email,
+          password: userData.password,
+        });
+      }
 
+      const safeUser = {
+        email: userData.email,
+        role: data.role,
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+      };
+
+      setUser(safeUser);
+      localStorage.setItem("smsrly_user", JSON.stringify(safeUser));
+
+      return {
+        success: true,
+        user: safeUser,
+      };
+    } catch (err) {
+      return {
+        success: false,
+        error:
+          err.response?.data?.message ||
+          "Registration failed.",
+      };
+    }
+  },
+  []
+);
   const socialAuth = useCallback(
     (provider, email, name) => {
       const cleanEmail = email.trim().toLowerCase();
