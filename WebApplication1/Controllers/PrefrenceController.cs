@@ -1,5 +1,6 @@
-﻿using Bll.Interfaces;
+﻿using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Classes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.DTOs;
 
@@ -16,7 +17,7 @@ namespace PresentationLayer.Controllers
             _preferencesRepository = preferencesRepository;
         }
 
-    
+        [Authorize(Roles = "Admin,Tenant")]
         [HttpGet("GetAllPreferences")]
         public IActionResult GetAllPreferences()
         {
@@ -41,7 +42,7 @@ namespace PresentationLayer.Controllers
             return Ok(result);
         }
 
-   
+        [Authorize(Roles = "Admin,Tenant")]
         [HttpGet("GetPreferenceById/{id}")]
         public IActionResult GetPreferenceById(int id)
         {
@@ -67,7 +68,7 @@ namespace PresentationLayer.Controllers
             return Ok(dto);
         }
 
-        
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetPreferenceByTenant/{tenantId}")]
         public IActionResult GetPreferenceByTenant(int tenantId)
         {
@@ -93,7 +94,7 @@ namespace PresentationLayer.Controllers
             return Ok(dto);
         }
 
-        
+        [Authorize(Roles = "Admin,Tenant")]
         [HttpGet("GetPreferencesByType/{type}")]
         public IActionResult GetPreferencesByType(string type)
         {
@@ -101,12 +102,14 @@ namespace PresentationLayer.Controllers
         }
 
         // GET: api/Preferences/GetPreferencesByPriceRange?minPrice=1000&maxPrice=5000
+        [Authorize(Roles = "Admin,Tenant")]
         [HttpGet("GetPreferencesByPriceRange")]
         public IActionResult GetPreferencesByPriceRange(int minPrice, int maxPrice)
         {
             return Ok(_preferencesRepository.GetByPriceRange(minPrice, maxPrice));
         }
 
+        [Authorize(Roles = "Admin,Tenant")]
         [HttpGet("GetPreferencesBySoloOrShared/{value}")]
         public IActionResult GetPreferencesBySoloOrShared(string value)
         {
@@ -115,7 +118,7 @@ namespace PresentationLayer.Controllers
             return Ok(_preferencesRepository.GetBySoloOrShared(value));
         }
 
-        
+        [Authorize(Roles = "Tenant")]
         [HttpPost("AddPreference")]
         public IActionResult AddPreference([FromBody] PreferencesDTO dto)
         {
@@ -141,7 +144,7 @@ namespace PresentationLayer.Controllers
                 preference);
         }
 
-        
+        [Authorize(Roles = "Tenant")]
         [HttpPut("UpdatePreference/{id}")]
         public IActionResult UpdatePreference(int id, [FromBody] PreferencesDTO dto)
         {
@@ -167,6 +170,7 @@ namespace PresentationLayer.Controllers
         }
 
         // DELETE: api/Preferences/DeletePreference/1
+        [Authorize(Roles = "Tenant")]
         [HttpDelete("DeletePreference/{id}")]
         public IActionResult DeletePreference(int id)
         {

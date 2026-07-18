@@ -3968,31 +3968,25 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Mahmoud\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "/var/home/elbrens/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Mahmoud\\Downloads\\DepiDataBase\\DepiDataBase\\DataAccessLayer\\DataAccessLayer.csproj",
+      "projectUniqueName": "/var/home/elbrens/Documents/DEPI/Project/DepiDataBase/DataAccessLayer/DataAccessLayer.csproj",
       "projectName": "DataAccessLayer",
-      "projectPath": "C:\\Users\\Mahmoud\\Downloads\\DepiDataBase\\DepiDataBase\\DataAccessLayer\\DataAccessLayer.csproj",
-      "packagesPath": "C:\\Users\\Mahmoud\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Mahmoud\\Downloads\\DepiDataBase\\DepiDataBase\\DataAccessLayer\\obj\\",
+      "projectPath": "/var/home/elbrens/Documents/DEPI/Project/DepiDataBase/DataAccessLayer/DataAccessLayer.csproj",
+      "packagesPath": "/var/home/elbrens/.nuget/packages/",
+      "outputPath": "/var/home/elbrens/Documents/DEPI/Project/DepiDataBase/DataAccessLayer/obj/",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Mahmoud\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/var/home/elbrens/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "/var/home/linuxbrew/.linuxbrew/Cellar/dotnet/10.0.301/libexec/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -4066,7 +4060,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "/var/home/linuxbrew/.linuxbrew/Cellar/dotnet/10.0.301/libexec/sdk/10.0.301/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.CSharp": "(,4.7.32767]",
           "Microsoft.VisualBasic": "(,10.4.32767]",

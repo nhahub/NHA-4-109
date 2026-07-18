@@ -1,5 +1,6 @@
-﻿using Bll.Interfaces;
+﻿using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.ModelContetxt;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.DTOs;
 
@@ -16,7 +17,7 @@ namespace PresentationLayer.Controllers
             _reviewRepository = reviewRepository;
         }
 
-       
+        [AllowAnonymous]
         [HttpGet("getAllReviews")]
         public IActionResult GetAll()
         {
@@ -38,7 +39,7 @@ namespace PresentationLayer.Controllers
             return Ok(result);
         }
 
-        
+        [AllowAnonymous]
         [HttpGet("GetReviewBy{id}")]
         public IActionResult GetById(int id)
         {
@@ -61,7 +62,7 @@ namespace PresentationLayer.Controllers
             return Ok(dto);
         }
 
-    
+        [AllowAnonymous]
         [HttpGet("GetpropertyReviews/{propertyId}")]
         public IActionResult GetReviewsByProperty(int propertyId)
         {
@@ -82,6 +83,7 @@ namespace PresentationLayer.Controllers
         }
 
         // GET: api/Review/Gettenant/1
+        [AllowAnonymous]
         [HttpGet("GettenantReviews/{tenantId}")]
         public IActionResult GetReviewsByTenant(int tenantId)
         {
@@ -101,7 +103,7 @@ namespace PresentationLayer.Controllers
             return Ok(result);
         }
 
-       
+        [Authorize(Roles = "Tenant")]
         [HttpPost("AddReview")]
         public IActionResult Add(ReviewDTO dto)
         {
@@ -121,7 +123,7 @@ namespace PresentationLayer.Controllers
             return Ok("Added Successfully");
         }
 
-  
+        [Authorize(Roles = "Tenant")]
         [HttpPut("UpdateReview/{id}")]
         public IActionResult Update(int id, ReviewDTO dto)
         {
@@ -143,7 +145,7 @@ namespace PresentationLayer.Controllers
             return Ok("Review updated successfully.");
         }
 
-        
+        [Authorize(Roles = "Admin,Tenant")]
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {

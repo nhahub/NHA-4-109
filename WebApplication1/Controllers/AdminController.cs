@@ -1,11 +1,13 @@
-﻿using Bll.Interfaces;
+﻿using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Classes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.DTOs;
 
 namespace PresentationLayer.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/AdminApis")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -36,9 +38,10 @@ namespace PresentationLayer.Controllers
                     AdminId=a.UsserId,
                     FirstName = a.FirstName,
                     LastName = a.LastName,
+                    NationalID = a.NationalID,
                     PhoneNumber = a.PhoneNumber,
                     Email = a.Email,
-                    Password = a.Password
+                    Password = BCrypt.Net.BCrypt.HashPassword(a.Password)
                 })
                 .ToList();
 
@@ -58,9 +61,10 @@ namespace PresentationLayer.Controllers
                 AdminId = admin.UsserId,
                 FirstName = admin.FirstName,
                 LastName = admin.LastName,
+                NationalID = admin.NationalID,
                 PhoneNumber = admin.PhoneNumber,
                 Email = admin.Email,
-                Password = admin.Password
+                Password = BCrypt.Net.BCrypt.HashPassword(admin.Password)
             };
 
             return Ok(dto);
@@ -72,9 +76,10 @@ namespace PresentationLayer.Controllers
             {
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
+                NationalID = dto.NationalID,
                 PhoneNumber = dto.PhoneNumber,
                 Email = dto.Email,
-                Password = dto.Password
+                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password)
             };
 
             _adminRepository.Add(admin);
@@ -85,9 +90,10 @@ namespace PresentationLayer.Controllers
                 AdminId = admin.UsserId,
                 FirstName = admin.FirstName,
                 LastName = admin.LastName,
+                NationalID = admin.NationalID,
                 PhoneNumber = admin.PhoneNumber,
                 Email = admin.Email,
-                Password = admin.Password
+                Password = BCrypt.Net.BCrypt.HashPassword(admin.Password)
             };
 
             return Ok(response);
@@ -103,9 +109,10 @@ namespace PresentationLayer.Controllers
 
             admin.FirstName = dto.FirstName;
             admin.LastName = dto.LastName;
+            admin.NationalID = dto.NationalID;
             admin.PhoneNumber = dto.PhoneNumber;
             admin.Email = dto.Email;
-            admin.Password = dto.Password;
+            if(!string.IsNullOrWhiteSpace(dto.Password)) admin.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
             _adminRepository.Update(admin);
             _adminRepository.Save();

@@ -11,10 +11,6 @@ namespace DataAccessLayer.Configures
         public void Configure(EntityTypeBuilder<Message> builder)
         {
             builder.HasKey(m => m.MessageID);
-           
-         
-
-
         }
     }
 }

@@ -1,5 +1,6 @@
-﻿using Bll.Interfaces;
+﻿using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Classes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.DTOs;
 
@@ -19,8 +20,7 @@ namespace WebApplication1.Controllers
             _userRepository = userRepository;
         }
 
-
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetAllUsers")]
         public IActionResult GetAllUsers()
         {
@@ -31,15 +31,17 @@ namespace WebApplication1.Controllers
                     UsserId = u.UsserId,
                     FirstName = u.FirstName,
                     LastName = u.LastName,
+                    NationalID = u.NationalID,
                     PhoneNumber = u.PhoneNumber,
                     Email = u.Email,
-                    Password = u.Password
+                    Password = BCrypt.Net.BCrypt.HashPassword(u.Password)
                 })
                 .ToList();
 
             return Ok(users);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetUserById/{id}")]
         public IActionResult GetUserById(int id)
         {
@@ -53,14 +55,16 @@ namespace WebApplication1.Controllers
                 UsserId = user.UsserId,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                NationalID = user.NationalID,
                 PhoneNumber = user.PhoneNumber,
                 Email = user.Email,
-                Password = user.Password
+                Password = BCrypt.Net.BCrypt.HashPassword(user.Password)
             };
 
             return Ok(dto);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetUserByEmail")]
         public IActionResult GetUserByEmail(string email)
         {
@@ -74,14 +78,16 @@ namespace WebApplication1.Controllers
                 UsserId = user.UsserId,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                NationalID = user.NationalID,
                 PhoneNumber = user.PhoneNumber,
                 Email = user.Email,
-                Password = user.Password
+                Password = BCrypt.Net.BCrypt.HashPassword(user.Password)
             };
 
             return Ok(dto);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetUserByPhone")]
         public IActionResult GetUserByPhone(string phoneNumber)
         {
@@ -95,14 +101,16 @@ namespace WebApplication1.Controllers
                 UsserId = user.UsserId,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                NationalID = user.NationalID,
                 PhoneNumber = user.PhoneNumber,
                 Email = user.Email,
-                Password = user.Password
+                Password = BCrypt.Net.BCrypt.HashPassword(user.Password)
             };
 
             return Ok(dto);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("AddUser")]
         public IActionResult AddUser(UserDTO dto)
         {
@@ -119,9 +127,10 @@ namespace WebApplication1.Controllers
             {
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
+                NationalID = dto.NationalID,
                 PhoneNumber = dto.PhoneNumber,
                 Email = dto.Email,
-                Password = dto.Password,
+                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 IsDeleted = false
             };
 
@@ -137,6 +146,7 @@ namespace WebApplication1.Controllers
             });
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateUser")]
         public IActionResult UpdateUser(UserDTO dto)
         {
@@ -144,6 +154,10 @@ namespace WebApplication1.Controllers
 
             if (user == null)
                 return NotFound("User not found.");
+            
+            var natIDUser = _userRepository.GetByNationalID(dto.NationalID);
+            if (natIDUser != null && natIDUser.UsserId != dto.UsserId)
+                return BadRequest("National ID already exists.");
 
             var emailUser = _userRepository.GetByEmail(dto.Email);
             if (emailUser != null && emailUser.UsserId != dto.UsserId)
@@ -155,9 +169,10 @@ namespace WebApplication1.Controllers
 
             user.FirstName = dto.FirstName;
             user.LastName = dto.LastName;
+            user.NationalID = dto.NationalID;
             user.Email = dto.Email;
             user.PhoneNumber = dto.PhoneNumber;
-            user.Password = dto.Password;
+            if(!string.IsNullOrWhiteSpace(dto.Password)) user.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
             _userRepository.Update(user);
             _userRepository.Save();
@@ -168,6 +183,7 @@ namespace WebApplication1.Controllers
             });
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteUser/{id}")]
         public IActionResult DeleteUser(int id)
         {

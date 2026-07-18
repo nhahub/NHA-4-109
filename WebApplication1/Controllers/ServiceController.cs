@@ -1,5 +1,6 @@
-﻿using Bll.Interfaces;
+﻿using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Classes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.DTOs;
 
@@ -18,7 +19,7 @@ namespace PresentationLayer.Controllers
             _propertyRepository = propertyRepository;
         }
 
-       
+        [AllowAnonymous]
         [HttpGet("getAllServices")]
         public IActionResult GetAll()
         {
@@ -38,7 +39,7 @@ namespace PresentationLayer.Controllers
             return Ok(result);
         }
 
-        
+        [AllowAnonymous]
         [HttpGet("GetById/{id}")]
         public IActionResult GetById(int id)
         {
@@ -59,6 +60,8 @@ namespace PresentationLayer.Controllers
 
             return Ok(dto);
         }
+        
+        [AllowAnonymous]
         [HttpGet("GetServiceByType/{serviceType}")]
         public IActionResult GetByType(string serviceType)
         {
@@ -77,7 +80,7 @@ namespace PresentationLayer.Controllers
             return Ok(result);
         }
 
-        
+        [AllowAnonymous]
         [HttpGet("GetServicesByProperty/{propertyId}")]
         public IActionResult GetServicesByProperty(int propertyId)
         {
@@ -95,9 +98,8 @@ namespace PresentationLayer.Controllers
 
             return Ok(result);
         }
-
-
-
+        
+        [Authorize(Roles = "Admin")]
         [HttpPost("AddService")]
         public IActionResult Add(ServiceDTO dto)
         {
@@ -125,7 +127,7 @@ namespace PresentationLayer.Controllers
             return Ok(service);
         }
 
-        
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateService/{id}")]
         public IActionResult Update(int id, ServiceDTO dto)
         {
@@ -147,16 +149,14 @@ namespace PresentationLayer.Controllers
                     service.Properties.Add(property);
                 }
             }
-
-
-
+            
             _serviceRepository.Update(service);
             _serviceRepository.Save();
 
             return Ok(service);
         }
 
-  
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteService/{id}")]
         public IActionResult Delete(int id)
         {

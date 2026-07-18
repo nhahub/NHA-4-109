@@ -1,5 +1,7 @@
-﻿using Bll.Interfaces;
+﻿using System.IdentityModel.Tokens.Jwt;
+using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Classes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.DTOs;
 
@@ -11,14 +13,17 @@ namespace PresentationLayer.Controllers
     {
         private readonly IPropertyRepository _propertyRepository;
         private readonly IServiceRepository _serviceRepository;
+        private readonly IAuthorizationService _authorizationService;
 
-        public PropertyController(IPropertyRepository propertyRepository,IServiceRepository serviceRepository)
+        public PropertyController(
+            IPropertyRepository propertyRepository, IServiceRepository serviceRepository, IAuthorizationService authorizationService)
         {
             _propertyRepository = propertyRepository;
             _serviceRepository= serviceRepository;
+            _authorizationService = authorizationService;
         }
 
-        
+        [AllowAnonymous]
         [HttpGet("GetAllProperties")]
         public IActionResult GetAllProperties()
         {
@@ -37,6 +42,7 @@ namespace PresentationLayer.Controllers
             return Ok(properties);
         }
 
+        [AllowAnonymous]
         [HttpGet("GetPropertyById/{id}")]
         public IActionResult GetPropertyById(int id)
         {
@@ -59,6 +65,7 @@ namespace PresentationLayer.Controllers
             return Ok(dto);
         }
 
+        [AllowAnonymous]
         [HttpGet("GetByPriceRange")]
         public IActionResult GetByPriceRange(int minPrice, int maxPrice)
         {
@@ -77,7 +84,7 @@ namespace PresentationLayer.Controllers
             return Ok(properties);
         }
 
-       
+        [AllowAnonymous]       
         [HttpGet("GetByRooms/{rooms}")]
         public IActionResult GetByRooms(int rooms)
         {
@@ -95,8 +102,8 @@ namespace PresentationLayer.Controllers
 
             return Ok(properties);
         }
-
-       
+        
+        [AllowAnonymous]
         [HttpGet("GetPropertyReviews/{propertyId}")]
         public IActionResult GetPropertyReviews(int propertyId)
         {
@@ -108,7 +115,7 @@ namespace PresentationLayer.Controllers
             return Ok(reviews);
         }
 
-        
+        [AllowAnonymous]
         [HttpGet("GetPropertyServices/{propertyId}")]
         public IActionResult GetPropertyServices(int propertyId)
         {
@@ -120,9 +127,7 @@ namespace PresentationLayer.Controllers
             return Ok(services);
         }
 
-
-
-
+        [Authorize(Roles = "Admin,Owner")]
         [HttpPost("AddProperty")]
         public IActionResult AddProperty([FromBody] PropertyDTO dto)
         {
@@ -135,7 +140,10 @@ namespace PresentationLayer.Controllers
                 RentPrice = dto.RentPrice,
                 Description = dto.Description,
                 ImageUrls = dto.ImageUrls,
-                OwnerId = dto.OwnerId,
+                // modified for IOwned
+                OwnerId = User.IsInRole("Owner")
+                    ? int.Parse(User.FindFirst(JwtRegisteredClaimNames.Sub)!.Value)
+                    : dto.OwnerId,
                 ManageAdminId = dto.AdminId,
                 Services = new List<Service>()
             };
@@ -150,10 +158,8 @@ namespace PresentationLayer.Controllers
                     property.Services.Add(service);
                 }
             }
-
-
-
-                _propertyRepository.Add(property);
+            
+            _propertyRepository.Add(property);
             _propertyRepository.Save();
 
             dto.ProperyID = property.ProperyID;
@@ -162,8 +168,9 @@ namespace PresentationLayer.Controllers
                 new { id = property.ProperyID }, dto);
         }
 
+        [Authorize(Roles = "Admin,Owner")]
         [HttpPut("UpdateProperty/{id}")]
-        public IActionResult UpdateProperty(int id, [FromBody] PropertyDTO dto)
+        public async Task<IActionResult> UpdateProperty(int id, [FromBody] PropertyDTO dto)
         {
             if (id != dto.ProperyID)
                 return BadRequest("Id mismatch.");
@@ -172,6 +179,14 @@ namespace PresentationLayer.Controllers
 
             if (property == null)
                 return NotFound();
+            
+            // added for IOwned
+            if (User.IsInRole("Owner"))
+            {
+                var authResult = await _authorizationService.AuthorizeAsync(User, property, "MustOwnProperty");
+                if (!authResult.Succeeded)
+                    return Forbid();
+            }
 
             property.NumberOFRooms = dto.NumberOFRooms;
             property.RentPrice = dto.RentPrice;
@@ -190,23 +205,29 @@ namespace PresentationLayer.Controllers
                     property.Services.Add(service);
                 }
             }
-
-
-
+            
             _propertyRepository.Update(property);
             _propertyRepository.Save();
 
             return Ok(dto);
         }
-
-
+        
+        [Authorize(Roles = "Admin,Owner")]
         [HttpDelete("DeleteProperty/{id}")]
-        public IActionResult DeleteProperty(int id)
+        public async Task<IActionResult> DeleteProperty(int id)
         {
             var property = _propertyRepository.GetById(id);
 
             if (property == null)
                 return NotFound();
+            
+            // added for IOwned
+            if (User.IsInRole("Owner"))
+            {
+                var authResult = await _authorizationService.AuthorizeAsync(User, property, "MustOwnProperty");
+                if (!authResult.Succeeded)
+                    return Forbid();
+            }
 
             _propertyRepository.SoftDelete(property);
             _propertyRepository.Save();

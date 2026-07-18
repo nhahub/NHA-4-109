@@ -1,11 +1,13 @@
-﻿using Bll.Interfaces;
+﻿using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Classes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PresentationLayer.DTOs;
 
 namespace PresentationLayer.Controllers
 {
+    [Authorize(Roles = "Tenant,Owner")]
     [Route("api/MessageApis")]
     [ApiController]
     public class MessageController : ControllerBase

@@ -1,5 +1,6 @@
-﻿using Bll.Interfaces;
+﻿using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Classes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.DTOs;
 
@@ -16,6 +17,7 @@ namespace PresentationLayer.Controllers
             _tenantRepository = tenantRepository;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetAllTenants")]
         public IActionResult GetAllTenants()
         {
@@ -26,15 +28,17 @@ namespace PresentationLayer.Controllers
                     UsserId = t.UsserId,
                     FirstName = t.FirstName,
                     LastName = t.LastName,
+                    NationalID = t.NationalID,
                     PhoneNumber = t.PhoneNumber,
                     Email = t.Email,
-                    Password = t.Password
+                    Password = BCrypt.Net.BCrypt.HashPassword(t.Password)
                 });
 
             return Ok(tenants);
         }
 
         // GET: api/TenantApis/GetTenantById/1
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetTenantById/{id}")]
         public IActionResult GetTenantById(int id)
         {
@@ -48,14 +52,16 @@ namespace PresentationLayer.Controllers
                 UsserId = tenant.UsserId,
                 FirstName = tenant.FirstName,
                 LastName = tenant.LastName,
+                NationalID = tenant.NationalID,
                 PhoneNumber = tenant.PhoneNumber,
                 Email = tenant.Email,
-                Password = tenant.Password
+                Password = BCrypt.Net.BCrypt.HashPassword(tenant.Password)
             };
 
             return Ok(dto);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetTenantReviews/{tenantId}")]
         public IActionResult GetTenantReviews(int tenantId)
         {
@@ -78,6 +84,7 @@ namespace PresentationLayer.Controllers
             return Ok(reviews);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetTenantMessages/{tenantId}")]
         public IActionResult GetTenantMessages(int tenantId)
         {
@@ -98,6 +105,8 @@ namespace PresentationLayer.Controllers
 
             return Ok(messages);
         }
+        
+        [Authorize(Roles = "Admin")]
         [HttpPost("AddTenant")]
         public IActionResult AddTenant([FromBody] TenantDTO dto)
         {
@@ -108,9 +117,10 @@ namespace PresentationLayer.Controllers
             {
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
+                NationalID = dto.NationalID,
                 PhoneNumber = dto.PhoneNumber,
                 Email = dto.Email,
-                Password = dto.Password
+                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password)
             };
 
             _tenantRepository.Add(tenant);
@@ -120,7 +130,9 @@ namespace PresentationLayer.Controllers
 
             return CreatedAtAction(nameof(GetTenantById), new { id = tenant.UsserId }, dto);
         }
+        
         // PUT: api/TenantApis/UpdateTenant/1
+        [Authorize(Roles = "Admin,Tenant")]
         [HttpPut("UpdateTenant/{id}")]
         public IActionResult UpdateTenant(int id, [FromBody] TenantDTO dto)
         {
@@ -134,9 +146,10 @@ namespace PresentationLayer.Controllers
 
             tenant.FirstName = dto.FirstName;
             tenant.LastName = dto.LastName;
+            tenant.NationalID = dto.NationalID;
             tenant.PhoneNumber = dto.PhoneNumber;
             tenant.Email = dto.Email;
-            tenant.Password = dto.Password;
+            if(!string.IsNullOrWhiteSpace(dto.Password)) tenant.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
             _tenantRepository.Update(tenant);
             _tenantRepository.Save();
@@ -144,6 +157,7 @@ namespace PresentationLayer.Controllers
             return Ok(dto);
         }
 
+        [Authorize(Roles = "Admin,Tenant")]
         [HttpDelete("DeleteTenant/{id}")]
         public IActionResult DeleteTenant(int id)
         {
@@ -157,8 +171,5 @@ namespace PresentationLayer.Controllers
 
             return Ok("Tenant deleted successfully.");
         }
-
-  
-        
     }
 }

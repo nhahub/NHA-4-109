@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
+    <PackageReference Include="DotNetEnv" Version="3.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.9" />
@@ -17,13 +21,14 @@
     <PackageReference Include="Scalar.AspNetCore" Version="2.16.6" />
     <PackageReference Include="Scalar.AspNetCore.Microsoft" Version="2.16.6" />
     <PackageReference Include="Scalar.AspNetCore.Swashbuckle" Version="2.16.6" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="10.2.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.2.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.2.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bll\Bll.csproj" />
+    <ProjectReference Include="..\BusinessLogicLayer\BusinessLogicLayer.csproj" />
   </ItemGroup>
 
 </Project>
