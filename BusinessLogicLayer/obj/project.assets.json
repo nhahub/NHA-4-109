@@ -2038,11 +2038,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/var/home/elbrens/Documents/DEPI/Project/DepiDataBase/BusinessLogicLayer/BusinessLogicLayer.csproj",
+      "projectUniqueName": "/var/home/elbrens/Documents/DEPI/Project/SMSRLY/BusinessLogicLayer/BusinessLogicLayer.csproj",
       "projectName": "BusinessLogicLayer",
-      "projectPath": "/var/home/elbrens/Documents/DEPI/Project/DepiDataBase/BusinessLogicLayer/BusinessLogicLayer.csproj",
+      "projectPath": "/var/home/elbrens/Documents/DEPI/Project/SMSRLY/BusinessLogicLayer/BusinessLogicLayer.csproj",
       "packagesPath": "/var/home/elbrens/.nuget/packages/",
-      "outputPath": "/var/home/elbrens/Documents/DEPI/Project/DepiDataBase/BusinessLogicLayer/obj/",
+      "outputPath": "/var/home/elbrens/Documents/DEPI/Project/SMSRLY/BusinessLogicLayer/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/var/home/elbrens/.nuget/NuGet/NuGet.Config"
@@ -2057,8 +2057,8 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "/var/home/elbrens/Documents/DEPI/Project/DepiDataBase/DataAccessLayer/DataAccessLayer.csproj": {
-              "projectPath": "/var/home/elbrens/Documents/DEPI/Project/DepiDataBase/DataAccessLayer/DataAccessLayer.csproj"
+            "/var/home/elbrens/Documents/DEPI/Project/SMSRLY/DataAccessLayer/DataAccessLayer.csproj": {
+              "projectPath": "/var/home/elbrens/Documents/DEPI/Project/SMSRLY/DataAccessLayer/DataAccessLayer.csproj"
             }
           }
         }

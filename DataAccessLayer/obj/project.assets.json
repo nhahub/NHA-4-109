@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 3,
   "targets": {
     "net10.0": {
       "Azure.Core/1.47.1": {
@@ -3973,11 +3973,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/var/home/elbrens/Documents/DEPI/Project/DepiDataBase/DataAccessLayer/DataAccessLayer.csproj",
+      "projectUniqueName": "/var/home/elbrens/Documents/DEPI/Project/SMSRLY/DataAccessLayer/DataAccessLayer.csproj",
       "projectName": "DataAccessLayer",
-      "projectPath": "/var/home/elbrens/Documents/DEPI/Project/DepiDataBase/DataAccessLayer/DataAccessLayer.csproj",
+      "projectPath": "/var/home/elbrens/Documents/DEPI/Project/SMSRLY/DataAccessLayer/DataAccessLayer.csproj",
       "packagesPath": "/var/home/elbrens/.nuget/packages/",
-      "outputPath": "/var/home/elbrens/Documents/DEPI/Project/DepiDataBase/DataAccessLayer/obj/",
+      "outputPath": "/var/home/elbrens/Documents/DEPI/Project/SMSRLY/DataAccessLayer/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/var/home/elbrens/.nuget/NuGet/NuGet.Config"
@@ -3986,12 +3986,10 @@
         "net10.0"
       ],
       "sources": {
-        "/var/home/linuxbrew/.linuxbrew/Cellar/dotnet/10.0.301/libexec/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net10.0": {
-          "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {}
         }
@@ -4006,11 +4004,10 @@
         "auditLevel": "low",
         "auditMode": "all"
       },
-      "SdkAnalysisLevel": "10.0.300"
+      "SdkAnalysisLevel": "10.0.100"
     },
     "frameworks": {
       "net10.0": {
-        "framework": "net10.0",
         "targetAlias": "net10.0",
         "dependencies": {
           "Microsoft.EntityFrameworkCore.SqlServer": {
@@ -4060,7 +4057,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/var/home/linuxbrew/.linuxbrew/Cellar/dotnet/10.0.301/libexec/sdk/10.0.301/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "/var/home/elbrens/.dotnet/sdk/10.0.102/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.CSharp": "(,4.7.32767]",
           "Microsoft.VisualBasic": "(,10.4.32767]",

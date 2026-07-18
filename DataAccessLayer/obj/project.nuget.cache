@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "GYLWO7+B76Q=",
+  "dgSpecHash": "gTznYiB5oag=",
   "success": true,
-  "projectFilePath": "/var/home/elbrens/Documents/DEPI/Project/DepiDataBase/DataAccessLayer/DataAccessLayer.csproj",
+  "projectFilePath": "/var/home/elbrens/Documents/DEPI/Project/SMSRLY/DataAccessLayer/DataAccessLayer.csproj",
   "expectedPackageFiles": [
     "/var/home/elbrens/.nuget/packages/azure.core/1.47.1/azure.core.1.47.1.nupkg.sha512",
     "/var/home/elbrens/.nuget/packages/azure.identity/1.14.2/azure.identity.1.14.2.nupkg.sha512",

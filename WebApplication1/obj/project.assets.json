@@ -3907,11 +3907,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/var/home/elbrens/Documents/DEPI/Project/DepiDataBase/WebApplication1/PresentationLayer.csproj",
+      "projectUniqueName": "/var/home/elbrens/Documents/DEPI/Project/SMSRLY/WebApplication1/PresentationLayer.csproj",
       "projectName": "PresentationLayer",
-      "projectPath": "/var/home/elbrens/Documents/DEPI/Project/DepiDataBase/WebApplication1/PresentationLayer.csproj",
+      "projectPath": "/var/home/elbrens/Documents/DEPI/Project/SMSRLY/WebApplication1/PresentationLayer.csproj",
       "packagesPath": "/var/home/elbrens/.nuget/packages/",
-      "outputPath": "/var/home/elbrens/Documents/DEPI/Project/DepiDataBase/WebApplication1/obj/",
+      "outputPath": "/var/home/elbrens/Documents/DEPI/Project/SMSRLY/WebApplication1/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/var/home/elbrens/.nuget/NuGet/NuGet.Config"
@@ -3926,8 +3926,8 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "/var/home/elbrens/Documents/DEPI/Project/DepiDataBase/BusinessLogicLayer/BusinessLogicLayer.csproj": {
-              "projectPath": "/var/home/elbrens/Documents/DEPI/Project/DepiDataBase/BusinessLogicLayer/BusinessLogicLayer.csproj"
+            "/var/home/elbrens/Documents/DEPI/Project/SMSRLY/BusinessLogicLayer/BusinessLogicLayer.csproj": {
+              "projectPath": "/var/home/elbrens/Documents/DEPI/Project/SMSRLY/BusinessLogicLayer/BusinessLogicLayer.csproj"
             }
           }
         }
