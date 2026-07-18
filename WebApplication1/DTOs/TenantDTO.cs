@@ -8,7 +8,7 @@
 
         public string LastName { get; set; }
         
-        public int NationalID { get; set; }
+        public string NationalID { get; set; }
 
         public string PhoneNumber { get; set; }
         

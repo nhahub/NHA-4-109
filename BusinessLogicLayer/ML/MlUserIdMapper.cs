@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BusinessLogicLayer.Utilities
+namespace BusinessLogicLayer.ML
 {
     public static class MlUserIdMapper
     {

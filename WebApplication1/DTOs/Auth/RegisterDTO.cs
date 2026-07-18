@@ -11,7 +11,7 @@ public class RegisterDTO
     public string LastName { get; set; }
     
     [Required]
-    public int NationalID { get; set; }
+    public string NationalID { get; set; }
 
     [Required]
     public string PhoneNumber { get; set; }

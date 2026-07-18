@@ -9,7 +9,7 @@ namespace BusinessLogicLayer.Interfaces
     {
         User? GetByEmail(string email);
         User? GetByPhone(string phoneNumber);
-        User? GetByNationalID(int nationalID);
+        User? GetByNationalID(string nationalID);
         bool CheckPassword(string email, string password);
     }
 }

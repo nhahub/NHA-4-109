@@ -12,9 +12,6 @@ namespace DataAccessLayer.Configures
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.HasKey(u => u.UsserId);
-
-
-
         }
     }
 }

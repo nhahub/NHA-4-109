@@ -10,15 +10,14 @@ using PresentationLayer.Integration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Adding jwtsettings.json to Builder (for JWT)
 builder.Configuration
     .AddJsonFile("jwtsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile("corssettings.json", optional: false, reloadOnChange: true);
+    .AddJsonFile("corssettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile("mlapisettings.json", optional: false, reloadOnChange: true);
 
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-// builder.Services.AddSwaggerGen();
 
 // Register DbContext
 builder.Services.AddDbContext<DataAccessLayer.AppContext>(options =>
@@ -50,6 +49,16 @@ builder.Services.AddAuthorization(options =>
 // JWT Auth + Swagger
 builder.Services.AddJwtAuth(builder.Configuration);
 builder.Services.AddSwaggerJwt();
+
+// Register ML
+var mlApiBaseUrl = builder.Configuration["MlApi:BaseUrl"]
+                   ?? throw new InvalidOperationException("MlApi:BaseUrl is not set");
+
+builder.Services.AddHttpClient<IMlApiClient, MlApiClient>(client =>
+{
+    client.BaseAddress = new Uri(mlApiBaseUrl.TrimEnd('/') + "/");
+    client.Timeout = TimeSpan.FromSeconds(15);
+});
 
 var app = builder.Build();
 

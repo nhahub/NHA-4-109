@@ -16,7 +16,7 @@ namespace BusinessLogicLayer.Repositories
         public User? GetByPhone(string phoneNumber)
             => _dbSet.FirstOrDefault(u => u.PhoneNumber == phoneNumber && !u.IsDeleted);
         
-        public User? GetByNationalID(int nationalID)
+        public User? GetByNationalID(string nationalID)
             => _dbSet.FirstOrDefault(u => u.NationalID == nationalID && !u.IsDeleted);
 
         public bool CheckPassword(string email, string password)

@@ -83,7 +83,7 @@ namespace PresentationLayer.Controllers
         }
 
         // GET: api/Review/Gettenant/1
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin,Tenant")]
         [HttpGet("GettenantReviews/{tenantId}")]
         public IActionResult GetReviewsByTenant(int tenantId)
         {

@@ -64,7 +64,7 @@ namespace PresentationLayer.Controllers
             return Ok(dto);
         }
 
-        [Authorize(Roles = "Admin,Tenant,Owner")]
+        [Authorize]
         [HttpGet("GetOwnerProperties/{ownerId}")]
         public IActionResult GetOwnerProperties(int ownerId)
         {
@@ -77,7 +77,7 @@ namespace PresentationLayer.Controllers
         }
         
         // GET: api/OwnerApis/GetOwnerMessages/1
-        [Authorize(Roles = "Admin,Tenant,Owner")]
+        [Authorize]
         [HttpGet("GetOwnerMessages/{ownerId}")]
         public IActionResult GetOwnerMessages(int ownerId)
         {
