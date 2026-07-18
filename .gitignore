@@ -1,3 +1,8 @@
+# **
+**/bin/
+**/obj/
+**/node_modules/
+
 # frontend
 frontend/logs
 frontend/*.log
@@ -27,9 +32,6 @@ backend/WebApplication1/jwtsettings.json
 backend/WebApplication1/corssettings.json
 backend/WebApplication1/mlapisettings.json
 backend/WebApplication1/appsettings.Development.json
-**/bin/
-**/obj/
-**/node_modules/
 backend/.vs/
 backend/.idea/
 
