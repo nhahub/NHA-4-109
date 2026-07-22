@@ -12,7 +12,7 @@ the recommendations provider.
 ## Architecture
 
 -   **Frontend:** React (Vite)
--   **Backend:** ASP.NET Core (.NET 8) using a Three-Tier Architecture
+-   **Backend:** ASP.NET Core (.NET 10) using a Three-Tier Architecture
 -   **Database:** SQL Server with Entity Framework Core
 -   **Machine Learning:** Python recommendation service
 
@@ -38,7 +38,7 @@ the recommendations provider.
 
 ## Technology Stack
 
--   ASP.NET Core 8
+-   ASP.NET Core 10
 -   Entity Framework Core
 -   SQL Server
 -   React + Vite
@@ -96,6 +96,8 @@ npm run dev
 ---
 
 ## Containerized Deployment (Docker/Podman)
+
+Install docker-compose or podman-compose packages first.
 
 ### Building
 

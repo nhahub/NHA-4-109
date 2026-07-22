@@ -1,10 +1,30 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useAuth, useProperties } from "../context/AuthContext";
 import PropertyMap from "../components/map/PropertyMap";
 import ThemeToggle from "../components/ui/ThemeToggle";
 import { handleImgError } from "../utils/imageUtils";
+import {
+  fetchRecommendations,
+  recordInteraction,
+} from "../api/recommendations";
 import styles from "./SearchPage.module.css";
+
+function normalizeRecommendation(r) {
+  return {
+    id: r.propertyId || r.PropertyId,
+    title: r.title || r.Title || "Untitled property",
+    price: r.price ?? r.Price ?? null,
+    city: r.city || r.City || "",
+    country: r.country || r.Country || "",
+    bedrooms: r.bedrooms ?? r.Bedrooms ?? null,
+    bathrooms: r.bathrooms ?? r.Bathrooms ?? null,
+    propertyType: r.propertyType || r.PropertyType || "",
+    images: r.images || r.Images || [],
+    score: r.score ?? r.Score ?? 0,
+    reason: r.reason || r.Reason || "",
+  };
+}
 
 const AMENITY = {
   Hospital: { color: "#dc2626", bg: "#fef2f2", icon: "fa-heartbeat" },
@@ -48,7 +68,45 @@ export default function SearchPage() {
   const [mapView, setMapView] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
 
+  const [recommendations, setRecommendations] = useState([]);
+  const [recsLoading, setRecsLoading] = useState(false);
+
   const saved = user?.savedProperties || [];
+
+  //  ML Recommended property
+  useEffect(() => {
+    if (!user) {
+      setRecommendations([]);
+      return;
+    }
+    let cancelled = false;
+    setRecsLoading(true);
+    fetchRecommendations(8)
+      .then((data) => {
+        if (cancelled) return;
+        const list = Array.isArray(data) ? data : data?.recommendations || [];
+        setRecommendations(
+          list.map(normalizeRecommendation).filter((r) => r.id),
+        );
+      })
+      .catch(() => {
+        if (!cancelled) setRecommendations([]);
+      })
+      .finally(() => {
+        if (!cancelled) setRecsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  const handleRecommendationClick = useCallback(
+    (rec) => {
+      recordInteraction(rec.id, "view").catch(() => {});
+      navigate("/property/" + rec.id);
+    },
+    [navigate],
+  );
 
   const filtered = useMemo(() => {
     let list = [...properties];
@@ -346,6 +404,93 @@ export default function SearchPage() {
 
         {/* ── Results ── */}
         <main className={styles.main}>
+          {/* ── ML recommendations ── */}
+          {user && (recsLoading || recommendations.length > 0) && (
+            <div className={styles.recoSection}>
+              <h3 className={styles.recoTitle}>
+                <i className="fas fa-wand-magic-sparkles me-2 text-primary"></i>
+                Recommended For You
+              </h3>
+              <div className={styles.recoScroll}>
+                {recsLoading
+                  ? Array.from({ length: 4 }).map((_, i) => (
+                      <div key={i} className={styles.recoCardSkeleton} />
+                    ))
+                  : recommendations.map((rec) => (
+                      <div
+                        key={rec.id}
+                        className={styles.recoCard}
+                        onClick={() => handleRecommendationClick(rec)}
+                      >
+                        <div className={styles.recoImg}>
+                          {rec.images?.[0] ? (
+                            <img
+                              src={rec.images[0]}
+                              alt={rec.title}
+                              loading="lazy"
+                              onError={handleImgError}
+                            />
+                          ) : (
+                            <div className={styles.noImg}>
+                              <i className="fas fa-image fa-2x text-muted"></i>
+                            </div>
+                          )}
+                          {rec.score > 0 && (
+                            <div className={styles.recoScoreBadge}>
+                              <i className="fas fa-star me-1"></i>
+                              {Math.round(rec.score * 100)}% match
+                            </div>
+                          )}
+                        </div>
+                        <div className={styles.recoBody}>
+                          <div className={styles.recoCardTitle}>
+                            {rec.title}
+                          </div>
+                          {rec.city && (
+                            <div className={styles.recoMeta}>
+                              <i className="fas fa-map-marker-alt me-1"></i>
+                              {rec.city}
+                              {rec.country ? `, ${rec.country}` : ""}
+                            </div>
+                          )}
+                          <div className={styles.recoMeta}>
+                            {rec.bedrooms != null && (
+                              <span className="me-2">
+                                <i className="fas fa-bed me-1"></i>
+                                {rec.bedrooms}
+                              </span>
+                            )}
+                            {rec.bathrooms != null && (
+                              <span>
+                                <i className="fas fa-bath me-1"></i>
+                                {rec.bathrooms}
+                              </span>
+                            )}
+                          </div>
+                          <div className="d-flex justify-content-between align-items-center mt-2">
+                            {rec.price != null && (
+                              <div className={styles.recoPrice}>
+                                <span className={styles.currencyLabel}>
+                                  EGP{" "}
+                                </span>
+                                {Number(rec.price).toLocaleString()}
+                                <span>/mo</span>
+                              </div>
+                            )}
+                          </div>
+                          {rec.reason && (
+                            <div className={styles.recoReason}>
+                              <i className="fas fa-lightbulb me-1"></i>
+                              {rec.reason}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+              </div>
+            </div>
+          )}
+
           <div className={styles.resultsHeader}>
             <h2 className={styles.resultsCount}>
               <span>{filtered.length}</span> Propert
